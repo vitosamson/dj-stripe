@@ -25,8 +25,8 @@
     {% endif %}
 
     <div class="row">
-      {% if user.userprofile.is_beta_user and user.userprofile.payment_plan_details %}
-      {% with plan=user.userprofile.payment_plan_details %}
+      {% if user.userprofile.is_beta_user and user.userprofile.plan %}
+      {% with plan=user.userprofile.plan %}
       <div class="panel plan panel-success">
         <div class="panel-heading">
           <h2>{{ plan.name }}</h2>

@@ -50,6 +50,10 @@ class SubscriptionPaymentMiddleware(object):
 
     def process_request(self, request):
 
+        # If user is staff or superuser, pass through
+        if request.user.is_staff or request.user.is_superuser:
+            return
+
         # First, if in DEBUG mode and with django-debug-toolbar, we skip
         #   this entire process.
         if settings.DEBUG and request.path.startswith("/__debug__"):
