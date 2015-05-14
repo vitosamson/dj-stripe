@@ -665,6 +665,17 @@ class CurrentSubscription(TimeStampedModel):
 
         return True
 
+    def get_plan_metadata(self):
+        metadata = stripe.Plan.retrieve(self.plan).get('metadata', {})
+
+        for key, val in metadata.items():
+            try:
+                metadata[key] = int(val)
+            except:
+                pass
+
+        return metadata
+
 
 class Invoice(StripeObject):
     # TODO - needs tests
