@@ -523,10 +523,11 @@ class Customer(StripeObject):
         Trial_days corresponds to the value specified by the selected plan
         for the key trial_period_days.
         """
-        if ("trial_period_days" in djstripe_settings.PAYMENTS_PLANS[plan]):
-            trial_days = djstripe_settings.PAYMENTS_PLANS[plan]["trial_period_days"]
+        if trial_days == None:
+            if ("trial_period_days" in djstripe_settings.PAYMENTS_PLANS[plan]):
+                trial_days = djstripe_settings.PAYMENTS_PLANS[plan]["trial_period_days"]
 
-        if trial_days:
+        if trial_days and trial_days > 0:
             resp = cu.update_subscription(
                 plan=djstripe_settings.PAYMENTS_PLANS[plan]["stripe_plan_id"],
                 trial_end=timezone.now() + datetime.timedelta(days=trial_days),
@@ -536,6 +537,7 @@ class Customer(StripeObject):
         else:
             resp = cu.update_subscription(
                 plan=djstripe_settings.PAYMENTS_PLANS[plan]["stripe_plan_id"],
+                trial_end='now',
                 prorate=prorate,
                 quantity=quantity
             )
