@@ -112,20 +112,24 @@ class Event(StripeObject):
                 pass
 
     def validate(self):
-        evt = stripe.Event.retrieve(self.stripe_id)
-        self.validated_message = json.loads(
-            json.dumps(
-                evt.to_dict(),
-                sort_keys=True,
-                cls=stripe.StripeObjectEncoder
+        try:
+            evt = stripe.Event.retrieve(self.stripe_id)
+            self.validated_message = json.loads(
+                json.dumps(
+                    evt.to_dict(),
+                    sort_keys=True,
+                    cls=stripe.StripeObjectEncoder
+                )
             )
-        )
-        if self.webhook_message["data"] == self.validated_message["data"]:
-            self.valid = True
-        else:
-            # TODO - needs test
-            self.valid = False
-        self.save()
+            if self.webhook_message["data"] == self.validated_message["data"]:
+                self.valid = True
+            else:
+                # TODO - needs test
+                self.valid = False
+            self.save()
+        except:
+            # couldn't find the event
+            pass
 
     def process(self):
         """
